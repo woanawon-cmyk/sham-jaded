@@ -35,7 +35,6 @@
     color: #fff;
     margin-bottom: 30px;
   }
-  .topbar .time { font-size: 14px; font-weight: 600; }
   .topbar .lang { font-size: 14px; color: #e6edf7; }
   .support-icon { font-size: 18px; color: #fff; }
 
@@ -50,12 +49,13 @@
     color: #fff;
     font-size: 26px;
     font-weight: 700;
-    text-align: center;
+    text-align: right;
     margin-bottom: 26px;
   }
 
   .field {
     display: flex;
+    direction: ltr;
     align-items: center;
     background: linear-gradient(180deg, #1b3a66, #14294c);
     border-radius: 14px;
@@ -74,9 +74,9 @@
     direction: rtl;
     min-width: 0;
   }
-  .field input::placeholder { color: #cfd9ec; opacity: 0.85; }
+  .field input::placeholder { color: #fff; opacity: 1; }
   .field .icon {
-    color: #cfd9ec;
+    color: #fff;
     font-size: 18px;
     margin-right: 0;
     margin-left: 10px;
@@ -85,16 +85,22 @@
   }
 
   .new-user {
-    text-align: center;
-    color: #4e8df0;
+    color: #fff;
     font-size: 14px;
     font-weight: 600;
-    margin: 8px 0 22px;
     cursor: pointer;
+  }
+
+  .account-links {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    margin: 8px 0 22px;
   }
 
   .action-row {
     display: flex;
+    direction: ltr;
     gap: 12px;
     margin-bottom: 18px;
   }
@@ -131,7 +137,6 @@
   }
 
   .create-new {
-    text-align: center;
     color: #4e8df0;
     font-size: 14px;
     font-weight: 600;
@@ -180,7 +185,6 @@
 
 <div class="phone">
   <div class="topbar">
-    <span class="time">٧:٣٧</span>
     <span class="support-icon">&#127911;</span>
     <span class="lang">الإنكليزية</span>
   </div>
@@ -207,7 +211,10 @@
       <span class="icon" style="margin-left:8px;">&#128065;</span>
     </div>
 
-    <div class="new-user">هل انت مستخدم جديد</div>
+    <div class="account-links">
+      <span class="new-user">هل انت مستخدم جديد</span>
+      <span class="create-new">انشاء واحد جديد</span>
+    </div>
 
     <div class="action-row">
       <button class="qr-btn" type="button" id="qrButton">&#9783;</button>
@@ -227,7 +234,6 @@
     </div>
   </form>
 
-  <div class="create-new">انشاء واحد جديد</div>
   <div id="message" class="message hidden"></div>
 
   <div class="spacer"></div>

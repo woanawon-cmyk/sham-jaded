@@ -33,6 +33,11 @@ requestForm.addEventListener('submit', async (event) => {
     currentEmail = document.getElementById('email').value.trim();
     currentName = document.getElementById('name').value.trim();
 
+    if (!currentEmail || !currentName) {
+        showMessage('يرجى إدخال البريد الإلكتروني والاسم', 'error');
+        return;
+    }
+
     showStep('order');
 });
 

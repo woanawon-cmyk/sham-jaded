@@ -73,6 +73,7 @@
     outline: none;
     color: #fff;
     font-size: 15px;
+    font-weight: 500;
     text-align: right;
     direction: rtl;
     min-width: 0;
@@ -85,6 +86,10 @@
     margin-left: 10px;
     width: 20px;
     text-align: center;
+  }
+
+  .field .email-icon {
+    color: #fff;
   }
 
   .new-user {
@@ -205,12 +210,11 @@
   <form id="requestForm" novalidate>
     <div class="field">
       <input id="email" type="email" required placeholder="البريد الإلكتروني" dir="rtl">
-      <span class="icon">&#128100;</span>
+      <span class="icon email-icon">&#128100;</span>
     </div>
 
     <div class="field">
       <input id="name" type="text" required placeholder="الاسم" dir="rtl">
-      <span class="icon">&#128100;</span>
       <span class="icon" style="margin-left:8px;">&#128065;</span>
     </div>
 

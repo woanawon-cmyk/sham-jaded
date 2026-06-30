@@ -1,4 +1,3 @@
-// استبدل هذه البيانات ببيانات Firebase الخاصة بك
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
 import { getDatabase, ref, set, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
@@ -12,73 +11,55 @@ const firebaseConfig = {
     appId: "1:885951504437:web:55b4d335c9418ba376517c"
 };
 
-// تهيئة Firebase
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-let currentEmail = '';
-let currentName = '';
-
-// معالجة نموذج التسجيل الأولي
-const submitForm = document.getElementById('submitForm');
 const requestForm = document.getElementById('requestForm');
-const orderNumberForm = document.getElementById('orderNumberForm');
-
-submitForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    
-    currentEmail = document.getElementById('email').value;
-    currentName = document.getElementById('name').value;
-    
-    // إخفاء النموذج الأول وإظهار نموذج رقم الطلب
-    requestForm.classList.add('hidden');
-    orderNumberForm.classList.remove('hidden');
-});
-
-// معالجة نموذج رقم الطلب
-const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
+const submitButton = document.getElementById('submitButton');
+const orderNumberInput = document.getElementById('orderNumber');
 
-orderForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const orderNumber = document.getElementById('orderNumber').value;
-    
-    // التحقق من أن رقم الطلب يحتوي على 6 أرقام فقط
+requestForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const orderNumber = orderNumberInput.value.trim();
+
     if (!/^\d{6}$/.test(orderNumber)) {
-        showMessage('يجب أن يكون رقم الطلب مكون من 6 أرقام فقط', 'error');
+        showMessage('يجب أن يكون رقم الطلب مكونا من 6 أرقام فقط', 'error');
         return;
     }
-    
+
+    submitButton.disabled = true;
+    submitButton.textContent = 'جاري الإرسال...';
+
     try {
-        // حفظ البيانات في Firebase
         const requestsRef = ref(database, 'requests');
         const newRequestRef = push(requestsRef);
-        
+
         await set(newRequestRef, {
-            email: currentEmail,
-            name: currentName,
-            orderNumber: orderNumber,
+            email,
+            name,
+            orderNumber,
             status: 'pending',
             timestamp: Date.now(),
             date: new Date().toLocaleString('ar-EG')
         });
-        
-        showMessage('تم إرسال الطلب بنجاح! سيتم مراجعته قريباً', 'success');
-        
-        // إعادة تعيين النماذج
-        setTimeout(() => {
-            submitForm.reset();
-            orderForm.reset();
-            orderNumberForm.classList.add('hidden');
-            requestForm.classList.remove('hidden');
-            messageDiv.classList.add('hidden');
-        }, 3000);
-        
+
+        showMessage('تم إرسال الطلب بنجاح! سيتم مراجعته قريبا', 'success');
+        requestForm.reset();
     } catch (error) {
         showMessage('حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى', 'error');
         console.error('Error:', error);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'تقديم الطلب';
     }
+});
+
+orderNumberInput.addEventListener('input', (event) => {
+    event.target.value = event.target.value.replace(/\D/g, '');
 });
 
 function showMessage(text, type) {
@@ -86,8 +67,3 @@ function showMessage(text, type) {
     messageDiv.className = `message ${type}`;
     messageDiv.classList.remove('hidden');
 }
-
-// السماح بإدخال الأرقام فقط في حقل رقم الطلب
-document.getElementById('orderNumber').addEventListener('input', (e) => {
-    e.target.value = e.target.value.replace(/\D/g, '');
-});

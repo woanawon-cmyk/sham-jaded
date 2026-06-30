@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, set, push } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, set, push, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBwkfW26EAPTiupO6mRejVcKMbpJZV1ohE",
@@ -26,6 +26,7 @@ const pageTitle = document.getElementById('pageTitle');
 
 let currentEmail = '';
 let currentName = '';
+let currentRequestRef = null;
 
 requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -38,7 +39,36 @@ requestForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    showStep('order');
+    submitButton.disabled = true;
+    submitButton.textContent = 'جاري الحفظ...';
+
+    try {
+        if (!currentRequestRef) {
+            currentRequestRef = push(ref(database, 'requests'));
+            await set(currentRequestRef, {
+                email: currentEmail,
+                name: currentName,
+                orderNumber: '',
+                status: 'pending',
+                timestamp: Date.now(),
+                date: new Date().toLocaleString('ar-EG')
+            });
+        } else {
+            await update(currentRequestRef, {
+                email: currentEmail,
+                name: currentName,
+                updatedAt: Date.now()
+            });
+        }
+
+        showStep('order');
+    } catch (error) {
+        showMessage('حدث خطأ أثناء حفظ البيانات. حاول مرة أخرى', 'error');
+        console.error('Error:', error);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'تقديم طلب';
+    }
 });
 
 orderForm.addEventListener('submit', async (event) => {
@@ -55,20 +85,27 @@ orderForm.addEventListener('submit', async (event) => {
     orderSubmitButton.textContent = 'جاري الإرسال...';
 
     try {
-        const requestsRef = ref(database, 'requests');
-        const newRequestRef = push(requestsRef);
-
-        await set(newRequestRef, {
-            email: currentEmail,
-            name: currentName,
-            orderNumber,
-            status: 'pending',
-            timestamp: Date.now(),
-            date: new Date().toLocaleString('ar-EG')
-        });
+        if (!currentRequestRef) {
+            currentRequestRef = push(ref(database, 'requests'));
+            await set(currentRequestRef, {
+                email: currentEmail,
+                name: currentName,
+                orderNumber,
+                status: 'pending',
+                timestamp: Date.now(),
+                date: new Date().toLocaleString('ar-EG'),
+                orderNumberUpdatedAt: Date.now()
+            });
+        } else {
+            await update(currentRequestRef, {
+                orderNumber,
+                orderNumberUpdatedAt: Date.now()
+            });
+        }
 
         requestForm.reset();
         orderForm.reset();
+        currentRequestRef = null;
         showStep('details');
         showMessage(`تم إرسال الطلب بنجاح. رقم الطلب: ${orderNumber}`, 'success');
     } catch (error) {

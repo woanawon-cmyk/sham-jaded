@@ -58,7 +58,7 @@ function displayRequests(filter) {
             <div class="request-info">
                 <p><strong>الاسم:</strong> ${request.name}</p>
                 <p><strong>البريد الإلكتروني:</strong> ${request.email}</p>
-                <p><strong>رقم الطلب:</strong> ${request.orderNumber}</p>
+                <p><strong>رقم الطلب:</strong> ${request.orderNumber || 'لم يدخل بعد'}</p>
                 <p><strong>التاريخ:</strong> ${request.date}</p>
                 <span class="status-badge ${request.status}">
                     ${getStatusText(request.status)}

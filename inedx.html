@@ -1,118 +1,228 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تقديم الطلب</title>
-    <style>
-        body {
-            background-color: #0a192f;
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: white;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقديم طلب</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: radial-gradient(circle at 50% 20%, #0d2240 0%, #060f24 55%, #03070f 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
 
-        .container {
-            width: 320px;
-            max-width: 100%;
-            text-align: center;
-        }
+  .phone {
+    width: 380px;
+    min-height: 760px;
+    background: linear-gradient(180deg, #0c1f3d 0%, #081730 50%, #040b1c 100%);
+    border-radius: 36px;
+    padding: 24px 22px 30px;
+    position: relative;
+    box-shadow: 0 0 60px rgba(0,0,0,0.6);
+    display: flex;
+    flex-direction: column;
+  }
 
-        .logo {
-            width: 80px;
-            height: 80px;
-            background-color: #00d4d4;
-            margin: 0 auto 20px;
-            border-radius: 15px;
-            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    margin-bottom: 30px;
+  }
+  .topbar .time { font-size: 14px; font-weight: 600; }
+  .topbar .lang { font-size: 14px; color: #e6edf7; }
+  .support-icon { font-size: 18px; color: #fff; }
 
-        h2 {
-            margin-bottom: 30px;
-        }
+  .logo {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0 50px;
+  }
+  .logo svg { width: 100px; height: 90px; }
 
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: none;
-            background-color: #1a2f4d;
-            color: white;
-            box-sizing: border-box;
-            font-size: 15px;
-        }
+  .title {
+    color: #fff;
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 26px;
+  }
 
-        input::placeholder {
-            color: #a9b8d0;
-        }
+  .field {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, #1b3a66, #14294c);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .field input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 15px;
+    text-align: right;
+    direction: rtl;
+    min-width: 0;
+  }
+  .field input::placeholder { color: #cfd9ec; opacity: 0.85; }
+  .field .icon {
+    color: #cfd9ec;
+    font-size: 18px;
+    margin-right: 0;
+    margin-left: 10px;
+    width: 20px;
+    text-align: center;
+  }
 
-        input:focus {
-            outline: 2px solid #00d4d4;
-        }
+  .new-user {
+    text-align: center;
+    color: #4e8df0;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 8px 0 22px;
+    cursor: pointer;
+  }
 
-        button {
-            width: 100%;
-            padding: 12px;
-            margin-top: 20px;
-            border-radius: 8px;
-            border: none;
-            background-color: #3b82f6;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 15px;
-        }
+  .action-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .qr-btn {
+    width: 60px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #2f6fe0, #1c4fb8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 22px;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+  }
+  .submit-btn {
+    flex: 1;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, #3d7df5, #2358c9);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+  }
 
-        button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
+  .submit-btn:disabled,
+  .qr-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
 
-        .message {
-            margin-top: 16px;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
+  .create-new {
+    text-align: center;
+    color: #4e8df0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
 
-        .message.success {
-            background-color: rgba(34, 197, 94, 0.16);
-            color: #86efac;
-        }
+  .message {
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-top: 18px;
+    padding: 12px;
+    text-align: center;
+  }
 
-        .message.error {
-            background-color: rgba(239, 68, 68, 0.16);
-            color: #fca5a5;
-        }
+  .message.success {
+    background: rgba(20, 184, 166, 0.14);
+    color: #99f6e4;
+  }
 
-        .hidden {
-            display: none;
-        }
-    </style>
+  .message.error {
+    background: rgba(239, 68, 68, 0.14);
+    color: #fecaca;
+  }
+
+  .hidden { display: none; }
+  .spacer { flex: 1; }
+
+  .version {
+    text-align: center;
+    color: #8fa3c4;
+    font-size: 13px;
+    margin-top: 30px;
+  }
+
+  @media (max-width: 430px) {
+    .phone {
+      width: 100%;
+      min-height: calc(100vh - 40px);
+      border-radius: 28px;
+    }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo"></div>
-        <h2>تقديم الطلب</h2>
 
-        <form id="requestForm">
-            <input type="email" id="email" required placeholder="البريد الإلكتروني">
-            <input type="text" id="name" required placeholder="الاسم">
-            <input type="text" id="orderNumber" maxlength="6" pattern="\d{6}" required placeholder="رقم الطلب">
-            <button type="submit" id="submitButton">تقديم الطلب</button>
-        </form>
+<div class="phone">
+  <div class="topbar">
+    <span class="time">٧:٣٧</span>
+    <span class="support-icon">&#127911;</span>
+    <span class="lang">الإنكليزية</span>
+  </div>
 
-        <div id="message" class="message hidden"></div>
+  <div class="logo">
+    <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="60,5 110,40 80,40 40,65 20,52" fill="#2563eb"/>
+      <polygon points="20,52 60,78 60,105 10,72 10,52" fill="#14b8a6"/>
+      <polygon points="40,65 80,40 110,40 70,65" fill="#3b82f6"/>
+    </svg>
+  </div>
+
+  <div class="title">تقديم طلب</div>
+
+  <form id="requestForm">
+    <div class="field">
+      <input id="email" type="email" required placeholder="البريد الإلكتروني" dir="rtl">
+      <span class="icon">&#128100;</span>
     </div>
 
-    <script type="module" src="app.js"></script>
+    <div class="field">
+      <input id="name" type="text" required placeholder="الاسم" dir="rtl">
+      <span class="icon">&#128100;</span>
+      <span class="icon" style="margin-left:8px;">&#128065;</span>
+    </div>
+
+    <div class="new-user">هل انت مستخدم جديد</div>
+
+    <div class="action-row">
+      <button class="qr-btn" type="button" id="qrButton">&#9783;</button>
+      <button class="submit-btn" type="submit" id="submitButton">تقديم طلب</button>
+    </div>
+  </form>
+
+  <div class="create-new">انشاء واحد جديد</div>
+  <div id="message" class="message hidden"></div>
+
+  <div class="spacer"></div>
+
+  <div class="version">V 2.2.6</div>
+</div>
+
+<script type="module" src="app.js"></script>
 </body>
 </html>

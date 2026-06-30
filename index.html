@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ØªÙ‚Ø¯ÙŠÙ… Ø·Ù„Ø¨</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="requestForm" class="form-container">
+            <h2>ØªÙ‚Ø¯ÙŠÙ… Ø·Ù„Ø¨ Ø¬Ø¯ÙŠØ¯</h2>
+            <form id="submitForm">
+                <div class="form-group">
+                    <label for="email">Ø§Ù„Ø¨Ø±ÙŠØ¯ Ø§Ù„Ø¥Ù„ÙƒØªØ±ÙˆÙ†ÙŠ</label>
+                    <input type="email" id="email" required placeholder="example@email.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="name">Ø§Ù„Ø§Ø³Ù…</label>
+                    <input type="text" id="name" required placeholder="Ø£Ø¯Ø®Ù„ Ø§Ø³Ù…Ùƒ">
+                </div>
+                
+                <button type="submit" class="btn-submit">ØªØ³Ø¬ÙŠÙ„</button>
+            </form>
+        </div>
+
+        <div id="orderNumberForm" class="form-container hidden">
+            <h2>Ø¥Ø¯Ø®Ø§Ù„ Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨</h2>
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="orderNumber">Ø±Ù‚Ù… Ø§Ù„Ø·Ù„Ø¨ (6 Ø£Ø±Ù‚Ø§Ù…)</label>
+                    <input type="text" id="orderNumber" maxlength="6" pattern="\d{6}" required placeholder="123456">
+                </div>
+                
+                <button type="submit" class="btn-submit">Ø¥Ø±Ø³Ø§Ù„ Ø§Ù„Ø·Ù„Ø¨</button>
+            </form>
+            <div id="message" class="message hidden"></div>
+        </div>
+    </div>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>

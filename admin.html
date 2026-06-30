@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الطلبات</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="admin-container">
+        <h1>لوحة تحكم الطلبات</h1>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">الكل</button>
+            <button class="filter-btn" data-filter="pending">قيد الانتظار</button>
+            <button class="filter-btn" data-filter="accepted">مقبول</button>
+            <button class="filter-btn" data-filter="rejected">مرفوض</button>
+        </div>
+
+        <div id="requestsContainer" class="requests-container">
+            <!-- الطلبات ستظهر هنا -->
+        </div>
+    </div>
+
+    <script type="module" src="admin.js"></script>
+</body>
+</html>

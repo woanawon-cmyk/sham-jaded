@@ -18,13 +18,19 @@ const requestForm = document.getElementById('requestForm');
 const messageDiv = document.getElementById('message');
 const submitButton = document.getElementById('submitButton');
 const qrButton = document.getElementById('qrButton');
+const orderNumberInput = document.getElementById('orderNumber');
 
 requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     const email = document.getElementById('email').value.trim();
     const name = document.getElementById('name').value.trim();
-    const orderNumber = createOrderNumber();
+    const orderNumber = orderNumberInput.value.trim();
+
+    if (!/^\d{6}$/.test(orderNumber)) {
+        showMessage('يجب أن يكون رقم الطلب مكونا من 6 أرقام فقط', 'error');
+        return;
+    }
 
     submitButton.disabled = true;
     submitButton.textContent = 'جاري الإرسال...';
@@ -57,12 +63,12 @@ qrButton.addEventListener('click', () => {
     showMessage('زر المسح غير مفعل حاليا. يمكنك تقديم الطلب من النموذج.', 'error');
 });
 
+orderNumberInput.addEventListener('input', (event) => {
+    event.target.value = event.target.value.replace(/\D/g, '');
+});
+
 function showMessage(text, type) {
     messageDiv.textContent = text;
     messageDiv.className = `message ${type}`;
     messageDiv.classList.remove('hidden');
-}
-
-function createOrderNumber() {
-    return String(Math.floor(100000 + Math.random() * 900000));
 }

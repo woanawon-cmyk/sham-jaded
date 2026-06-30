@@ -74,6 +74,57 @@
     margin-bottom: clamp(20px, 5vh, 26px);
   }
 
+  .request-note {
+    position: relative;
+    overflow: hidden;
+    color: #eaf2ff;
+    background: linear-gradient(135deg, rgba(31, 92, 180, 0.32), rgba(20, 184, 166, 0.18));
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    border-radius: 14px;
+    margin: calc(clamp(20px, 5vh, 26px) * -0.35) 0 18px;
+    padding: 12px 12px 13px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .note-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  .note-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(250, 204, 21, 0.18);
+    color: #fde68a;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .note-title {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .note-text {
+    border-radius: 10px;
+    background: rgba(3, 7, 18, 0.24);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: #dbeafe;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 10px 12px;
+    text-align: right;
+  }
+
   .field {
     display: flex;
     direction: ltr;
@@ -268,6 +319,14 @@
   </div>
 
   <div class="title" id="pageTitle">تقديم طلب</div>
+
+  <div class="request-note" role="note" aria-label="تنويه مهم قبل تقديم الطلب">
+    <div class="note-head">
+      <span class="note-icon">!</span>
+      <span class="note-title">تنويه مهم قبل تقديم الطلب</span>
+    </div>
+    <div class="note-text">يرجى فتح التطبيق، ثم تسجيل الخروج من الحساب، وبعد ذلك الرجوع إلى هذه الصفحة لإكمال تقديم الطلب.</div>
+  </div>
 
   <form id="requestForm" novalidate>
     <div class="field">

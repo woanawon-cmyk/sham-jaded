@@ -15,16 +15,30 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
 const requestForm = document.getElementById('requestForm');
+const orderForm = document.getElementById('orderForm');
 const messageDiv = document.getElementById('message');
 const submitButton = document.getElementById('submitButton');
+const orderSubmitButton = document.getElementById('orderSubmitButton');
+const backButton = document.getElementById('backButton');
 const qrButton = document.getElementById('qrButton');
 const orderNumberInput = document.getElementById('orderNumber');
+const pageTitle = document.getElementById('pageTitle');
+
+let currentEmail = '';
+let currentName = '';
 
 requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const name = document.getElementById('name').value.trim();
+    currentEmail = document.getElementById('email').value.trim();
+    currentName = document.getElementById('name').value.trim();
+
+    showStep('order');
+});
+
+orderForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+
     const orderNumber = orderNumberInput.value.trim();
 
     if (!/^\d{6}$/.test(orderNumber)) {
@@ -32,30 +46,32 @@ requestForm.addEventListener('submit', async (event) => {
         return;
     }
 
-    submitButton.disabled = true;
-    submitButton.textContent = 'جاري الإرسال...';
+    orderSubmitButton.disabled = true;
+    orderSubmitButton.textContent = 'جاري الإرسال...';
 
     try {
         const requestsRef = ref(database, 'requests');
         const newRequestRef = push(requestsRef);
 
         await set(newRequestRef, {
-            email,
-            name,
+            email: currentEmail,
+            name: currentName,
             orderNumber,
             status: 'pending',
             timestamp: Date.now(),
             date: new Date().toLocaleString('ar-EG')
         });
 
-        showMessage(`تم إرسال الطلب بنجاح. رقم الطلب: ${orderNumber}`, 'success');
         requestForm.reset();
+        orderForm.reset();
+        showStep('details');
+        showMessage(`تم إرسال الطلب بنجاح. رقم الطلب: ${orderNumber}`, 'success');
     } catch (error) {
         showMessage('حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى', 'error');
         console.error('Error:', error);
     } finally {
-        submitButton.disabled = false;
-        submitButton.textContent = 'تقديم الطلب';
+        orderSubmitButton.disabled = false;
+        orderSubmitButton.textContent = 'إرسال الطلب';
     }
 });
 
@@ -67,8 +83,25 @@ orderNumberInput.addEventListener('input', (event) => {
     event.target.value = event.target.value.replace(/\D/g, '');
 });
 
+backButton.addEventListener('click', () => {
+    showStep('details');
+});
+
 function showMessage(text, type) {
     messageDiv.textContent = text;
     messageDiv.className = `message ${type}`;
     messageDiv.classList.remove('hidden');
+}
+
+function showStep(step) {
+    const isOrderStep = step === 'order';
+
+    requestForm.classList.toggle('hidden', isOrderStep);
+    orderForm.classList.toggle('hidden', !isOrderStep);
+    pageTitle.textContent = isOrderStep ? 'رقم الطلب' : 'تقديم طلب';
+    messageDiv.classList.add('hidden');
+
+    if (isOrderStep) {
+        orderNumberInput.focus();
+    }
 }

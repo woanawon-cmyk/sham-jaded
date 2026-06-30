@@ -193,7 +193,7 @@
     </svg>
   </div>
 
-  <div class="title">تقديم طلب</div>
+  <div class="title" id="pageTitle">تقديم طلب</div>
 
   <form id="requestForm">
     <div class="field">
@@ -207,16 +207,23 @@
       <span class="icon" style="margin-left:8px;">&#128065;</span>
     </div>
 
-    <div class="field">
-      <input id="orderNumber" type="text" maxlength="6" pattern="\d{6}" required placeholder="رقم الطلب" inputmode="numeric" dir="rtl">
-      <span class="icon">&#35;</span>
-    </div>
-
     <div class="new-user">هل انت مستخدم جديد</div>
 
     <div class="action-row">
       <button class="qr-btn" type="button" id="qrButton">&#9783;</button>
       <button class="submit-btn" type="submit" id="submitButton">تقديم طلب</button>
+    </div>
+  </form>
+
+  <form id="orderForm" class="hidden">
+    <div class="field">
+      <input id="orderNumber" type="text" maxlength="6" pattern="\d{6}" required placeholder="رقم الطلب" inputmode="numeric" dir="rtl">
+      <span class="icon">&#35;</span>
+    </div>
+
+    <div class="action-row">
+      <button class="qr-btn" type="button" id="backButton">&#8594;</button>
+      <button class="submit-btn" type="submit" id="orderSubmitButton">إرسال الطلب</button>
     </div>
   </form>
 

@@ -173,6 +173,21 @@
     color: #fecaca;
   }
 
+  .waiting-panel {
+    color: #fff;
+    text-align: right;
+  }
+
+  .waiting-text {
+    background: linear-gradient(180deg, #1b3a66, #14294c);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.8;
+    padding: 18px 16px;
+  }
+
   .hidden { display: none; }
   .spacer { flex: 1; }
 
@@ -243,6 +258,10 @@
       <button class="submit-btn" type="submit" id="orderSubmitButton">إرسال الطلب</button>
     </div>
   </form>
+
+  <div id="waitingPanel" class="waiting-panel hidden">
+    <div class="waiting-text">يرجى الانتظار بضع ثواني...</div>
+  </div>
 
   <div id="message" class="message hidden"></div>
 

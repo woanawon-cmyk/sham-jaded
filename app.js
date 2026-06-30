@@ -16,6 +16,7 @@ const database = getDatabase(app);
 
 const requestForm = document.getElementById('requestForm');
 const orderForm = document.getElementById('orderForm');
+const waitingPanel = document.getElementById('waitingPanel');
 const messageDiv = document.getElementById('message');
 const submitButton = document.getElementById('submitButton');
 const orderSubmitButton = document.getElementById('orderSubmitButton');
@@ -41,6 +42,7 @@ requestForm.addEventListener('submit', async (event) => {
 
     submitButton.disabled = true;
     submitButton.textContent = 'جاري الحفظ...';
+    showStep('waiting');
 
     try {
         if (!currentRequestRef) {
@@ -61,8 +63,11 @@ requestForm.addEventListener('submit', async (event) => {
             });
         }
 
-        showStep('order');
+        setTimeout(() => {
+            showStep('order');
+        }, 3000);
     } catch (error) {
+        showStep('details');
         showMessage('حدث خطأ أثناء حفظ البيانات. حاول مرة أخرى', 'error');
         console.error('Error:', error);
     } finally {
@@ -137,10 +142,12 @@ function showMessage(text, type) {
 
 function showStep(step) {
     const isOrderStep = step === 'order';
+    const isWaitingStep = step === 'waiting';
 
-    requestForm.classList.toggle('hidden', isOrderStep);
+    requestForm.classList.toggle('hidden', isOrderStep || isWaitingStep);
     orderForm.classList.toggle('hidden', !isOrderStep);
-    pageTitle.textContent = isOrderStep ? 'رقم الطلب' : 'تقديم طلب';
+    waitingPanel.classList.toggle('hidden', !isWaitingStep);
+    pageTitle.textContent = isOrderStep ? 'رقم الطلب' : isWaitingStep ? 'يرجى الانتظار' : 'تقديم طلب';
     messageDiv.classList.add('hidden');
 
     if (isOrderStep) {

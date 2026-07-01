@@ -238,7 +238,8 @@ input:focus {
 }
 
 .btn-accept,
-.btn-reject {
+.btn-reject,
+.btn-delete {
     flex: 1;
     padding: 10px;
     border: none;
@@ -266,8 +267,18 @@ input:focus {
     background: #c82333;
 }
 
+.btn-delete {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #5a6268;
+}
+
 .btn-accept:disabled,
-.btn-reject:disabled {
+.btn-reject:disabled,
+.btn-delete:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }

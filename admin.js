@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, onValue, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, onValue, update, remove } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBwkfW26EAPTiupO6mRejVcKMbpJZV1ohE",
@@ -64,16 +64,19 @@ function displayRequests(filter) {
                     ${getStatusText(request.status)}
                 </span>
             </div>
-            ${request.status === 'pending' ? `
-                <div class="action-buttons">
+            <div class="action-buttons">
+                ${request.status === 'pending' ? `
                     <button class="btn-accept" onclick="updateStatus('${request.id}', 'accepted')">
                         قبول
                     </button>
                     <button class="btn-reject" onclick="updateStatus('${request.id}', 'rejected')">
                         رفض
                     </button>
-                </div>
-            ` : ''}
+                ` : ''}
+                <button class="btn-delete" onclick="deleteRequest('${request.id}')">
+                    حذف الطلب
+                </button>
+            </div>
         </div>
     `).join('');
 }
@@ -90,6 +93,23 @@ window.updateStatus = async function(requestId, status) {
     } catch (error) {
         alert('حدث خطأ أثناء تحديث الحالة');
         console.error('Error:', error);
+    }
+}
+
+window.deleteRequest = async function(requestId) {
+    const confirmed = confirm('هل أنت متأكد من حذف الطلب نهائيا؟');
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+        const requestRef = ref(database, `requests/${requestId}`);
+        await remove(requestRef);
+        alert('تم حذف الطلب نهائيا');
+    } catch (error) {
+        alert('حدث خطأ أثناء حذف الطلب');
+        console.error('Delete error:', error);
     }
 }
 

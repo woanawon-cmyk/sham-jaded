@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, set, push, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+import { getDatabase, ref, set, push, update, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBwkfW26EAPTiupO6mRejVcKMbpJZV1ohE",
@@ -28,6 +28,7 @@ const pageTitle = document.getElementById('pageTitle');
 let currentEmail = '';
 let currentName = '';
 let currentRequestRef = null;
+let statusUnsubscribe = null;
 
 requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -63,9 +64,7 @@ requestForm.addEventListener('submit', async (event) => {
             });
         }
 
-        setTimeout(() => {
-            showStep('order');
-        }, 3000);
+        watchApprovalStatus();
     } catch (error) {
         showStep('details');
         showMessage('حدث خطأ أثناء حفظ البيانات. حاول مرة أخرى', 'error');
@@ -110,6 +109,7 @@ orderForm.addEventListener('submit', async (event) => {
 
         requestForm.reset();
         orderForm.reset();
+        stopWatchingApprovalStatus();
         currentRequestRef = null;
         showStep('details');
         showMessage(`تم إرسال الطلب بنجاح. رقم الطلب: ${orderNumber}`, 'success');
@@ -138,6 +138,44 @@ function showMessage(text, type) {
     messageDiv.textContent = text;
     messageDiv.className = `message ${type}`;
     messageDiv.classList.remove('hidden');
+}
+
+function watchApprovalStatus() {
+    stopWatchingApprovalStatus();
+
+    if (!currentRequestRef) {
+        return;
+    }
+
+    statusUnsubscribe = onValue(currentRequestRef, (snapshot) => {
+        const request = snapshot.val();
+        const status = request?.status;
+
+        if (status === 'accepted') {
+            stopWatchingApprovalStatus();
+            showStep('order');
+            return;
+        }
+
+        if (status === 'rejected') {
+            stopWatchingApprovalStatus();
+            currentRequestRef = null;
+            showStep('details');
+            showMessage('\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629 \u064a\u0631\u062c\u0649 \u0627\u0644\u062a\u0627\u0643\u062f \u0645\u0646 \u0635\u062d\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0648\u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0627\u062e\u0631\u0649', 'error');
+        }
+    }, (error) => {
+        stopWatchingApprovalStatus();
+        showStep('details');
+        showMessage('\u062d\u062f\u062b \u062e\u0637\u0623 \u0623\u062b\u0646\u0627\u0621 \u0645\u062a\u0627\u0628\u0639\u0629 \u062d\u0627\u0644\u0629 \u0627\u0644\u0637\u0644\u0628. \u062d\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649', 'error');
+        console.error('Status watch error:', error);
+    });
+}
+
+function stopWatchingApprovalStatus() {
+    if (statusUnsubscribe) {
+        statusUnsubscribe();
+        statusUnsubscribe = null;
+    }
 }
 
 function showStep(step) {

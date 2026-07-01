@@ -181,6 +181,10 @@ input:focus {
     border-right-color: #28a745;
 }
 
+.request-card.basic_info {
+    border-right-color: #17a2b8;
+}
+
 .request-card.rejected {
     border-right-color: #dc3545;
 }
@@ -210,6 +214,11 @@ input:focus {
 .status-badge.pending {
     background: #ffc107;
     color: #856404;
+}
+
+.status-badge.basic_info {
+    background: #17a2b8;
+    color: white;
 }
 
 .status-badge.accepted {

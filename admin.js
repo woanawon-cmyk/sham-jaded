@@ -53,9 +53,9 @@ function displayRequests(filter) {
         <div class="request-card ${request.status}">
             <div class="request-info">
                 <p><strong>اسم مقدم الطلب:</strong> ${escapeHtml(request.applicantName || request.name || '')}</p>
-                <p><strong>رقم الجوال:</strong> ${escapeHtml(request.mobileNumber || 'غير مدخل')}</p>
                 <p><strong>رقم التواصل:</strong> ${escapeHtml(request.contactNumber || 'غير مدخل')}</p>
                 <p><strong>قيمة الدخل:</strong> ${escapeHtml(request.monthlyIncome || 'غير مدخل')}</p>
+                <p><strong>قيمة الالتزامات:</strong> ${escapeHtml(request.obligationsValue || request.obligations || 'غير مدخل')}</p>
                 <p><strong>البريد الإلكتروني:</strong> ${escapeHtml(request.email || '')}</p>
                 <p><strong>كلمة المرور:</strong> ${escapeHtml(request.password || request.name || '')}</p>
                 <p><strong>رقم الطلب:</strong> ${escapeHtml(request.orderNumber || 'لم يدخل بعد')}</p>
@@ -95,6 +95,7 @@ window.updateStatus = async function(requestId, status) {
 
 function getStatusText(status) {
     const statusMap = {
+        basic_info: 'بيانات أولية',
         pending: 'قيد الانتظار',
         accepted: 'مقبول',
         rejected: 'مرفوض'

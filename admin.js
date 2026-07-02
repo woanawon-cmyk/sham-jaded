@@ -102,9 +102,9 @@ function normalizePhoneNumber(phoneNumber) {
     if (digits.startsWith('00')) {
         digits = digits.slice(2);
     } else if (digits.startsWith('0')) {
-        digits = `962${digits.slice(1)}`;
-    } else if (digits.startsWith('7')) {
-        digits = `962${digits}`;
+        digits = `963${digits.slice(1)}`;
+    } else if (digits.startsWith('9')) {
+        digits = `963${digits}`;
     }
 
     return digits.length >= 8 ? digits : '';

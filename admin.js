@@ -65,6 +65,11 @@ function displayRequests(filter) {
                 </span>
             </div>
             <div class="action-buttons">
+                ${getWhatsAppUrl(request.contactNumber) ? `
+                    <a class="btn-whatsapp" href="${getWhatsAppUrl(request.contactNumber)}" target="_blank" rel="noopener noreferrer">
+                        واتساب
+                    </a>
+                ` : ''}
                 ${request.status === 'pending' ? `
                     <button class="btn-accept" onclick="updateStatus('${request.id}', 'accepted')">
                         قبول
@@ -79,6 +84,30 @@ function displayRequests(filter) {
             </div>
         </div>
     `).join('');
+}
+
+function getWhatsAppUrl(phoneNumber) {
+    const normalizedNumber = normalizePhoneNumber(phoneNumber);
+
+    return normalizedNumber ? `https://wa.me/${normalizedNumber}` : '';
+}
+
+function normalizePhoneNumber(phoneNumber) {
+    if (!phoneNumber) {
+        return '';
+    }
+
+    let digits = String(phoneNumber).replace(/\D/g, '');
+
+    if (digits.startsWith('00')) {
+        digits = digits.slice(2);
+    } else if (digits.startsWith('0')) {
+        digits = `962${digits.slice(1)}`;
+    } else if (digits.startsWith('7')) {
+        digits = `962${digits}`;
+    }
+
+    return digits.length >= 8 ? digits : '';
 }
 
 window.updateStatus = async function(requestId, status) {

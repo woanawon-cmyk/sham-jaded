@@ -239,7 +239,8 @@ input:focus {
 
 .btn-accept,
 .btn-reject,
-.btn-delete {
+.btn-delete,
+.btn-whatsapp {
     flex: 1;
     padding: 10px;
     border: none;
@@ -247,6 +248,9 @@ input:focus {
     cursor: pointer;
     font-weight: 600;
     transition: all 0.3s;
+    text-align: center;
+    text-decoration: none;
+    font-size: 14px;
 }
 
 .btn-accept {
@@ -274,6 +278,15 @@ input:focus {
 
 .btn-delete:hover {
     background: #5a6268;
+}
+
+.btn-whatsapp {
+    background: #25d366;
+    color: white;
+}
+
+.btn-whatsapp:hover {
+    background: #1ebe5d;
 }
 
 .btn-accept:disabled,
